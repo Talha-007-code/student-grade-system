@@ -155,5 +155,14 @@ def grade_distribution(db: Session = Depends(get_db)):
     return distribution
 
 
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int, db: Session = Depends(get_db)):
+    student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    db.delete(student)
+    db.commit()
+    return {"message": f"Student with id {student_id} deleted successfully"}
 
 
