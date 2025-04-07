@@ -26,6 +26,20 @@ def get_students(db: Session = Depends(get_db)):
 
 
 
+@app.put("/students/{student_id}")
+def update_student(student_id: int, name: str, db: Session = Depends(get_db)):
+    student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code= 404, detals = "Student not found")
+
+
+    student.name = name
+    db.commit()
+    db.refresh(student)
+    return student
+
+
+
 @app.post("/grades/")
 def assign_grade(student_id: int, subject: str, grade: str, db: Session = Depends(get_db)): 
     student = db.query(models.Student).filter(models.Student.id == student_id).first() 
